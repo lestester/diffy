@@ -4,6 +4,9 @@ import java.net.InetSocketAddress
 
 import com.twitter.util.Duration
 
+/**
+  *  全局变量设置类 以下变量可以通过启动脚本传入 扩展可以在其中增加控制参数
+  */
 case class Settings(
   datacenter: String,
   servicePort:InetSocketAddress,

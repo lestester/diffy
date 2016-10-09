@@ -9,6 +9,10 @@ import org.jboss.netty.handler.codec.http.{HttpResponse, HttpRequest}
 
 import scala.collection.JavaConversions._
 
+/**
+  * 返回值解析类 每次请求 DifferenceProxy 调用liftRequest方法 解析返回结果
+  *   TODO 目前没有对请求状态的判断，可以参考在控制台或者请求接口处输出请求状态
+  **/
 object HttpLifter {
   val ControllerEndpointHeaderName = "X-Action-Name"
 
@@ -45,6 +49,7 @@ class HttpLifter(excludeHttpHeadersComparison: Boolean) {
     Future.value(Message(canonicalResource, FieldMap(Map("request"-> req.toString))))
   }
 
+  /** 对请求返回 解析方法 1.解析方式根据header中的contentType 选择合适的解析方式进行解析 **/
   def liftResponse(resp: Try[HttpResponse]): Future[Message] = {
     Future.const(resp) flatMap { r: HttpResponse =>
       val mediaTypeOpt: Option[MediaType] =
@@ -55,6 +60,7 @@ class HttpLifter(excludeHttpHeadersComparison: Boolean) {
       /** header supplied by macaw, indicating the controller reached **/
       val controllerEndpoint = Option(r.headers.get(ControllerEndpointHeaderName))
 
+      /** mediaTypeOpt 返回值类型  contentLengthOpt返回值长度 TODO可以加入返回状态码**/
       (mediaTypeOpt, contentLengthOpt) match {
         /** When Content-Length is 0, only compare headers **/
         case (_, Some(length)) if length.toInt == 0 =>

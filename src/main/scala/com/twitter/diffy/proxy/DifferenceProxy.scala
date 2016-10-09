@@ -9,6 +9,12 @@ import com.twitter.inject.TwitterModule
 import com.twitter.logging.Logger
 import com.twitter.util._
 
+/**
+  * diff主流程类
+  * 1.完成发送请求
+  * 2.解析请求结果
+  * 3.分析diffy结果产生报告
+  */
 object DifferenceProxyModule extends TwitterModule {
   @Provides
   @Singleton
