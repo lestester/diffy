@@ -66,14 +66,18 @@ trait DifferenceProxy {
   private[this] lazy val multicastHandler =
     new SequentialMulticastService(Seq(primary.client, candidate.client, secondary.client))
 
+  /** diff方法主体 req为请求的url log中可以记录该请求 **/
   def proxy = new Service[Req, Rep] {
     override def apply(req: Req): Future[Rep] = {
+      /** 发送请求获取response **/
       val rawResponses =
         multicastHandler(req) respond {
           case Return(_) => log.debug("success networking")
           case Throw(t) => log.debug(t, "error networking")
         }
 
+      /** 解析返回数据 可以在解析数据之前 判断header中的状态吗 输出到控制台或者抛出异常  **/
+      /** response是一个Seq(队列) Seq(primaryResponse, candidateResponse, secondaryResponse)  **/
       val responses: Future[Seq[Message]] =
         rawResponses flatMap { reps =>
           Future.collect(reps map liftResponse) respond {

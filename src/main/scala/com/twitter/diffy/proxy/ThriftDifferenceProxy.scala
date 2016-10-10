@@ -11,6 +11,7 @@ import com.twitter.finagle.thrift.{ClientId, ThriftClientRequest}
 import com.twitter.util.{Try, Future}
 import scala.collection.JavaConversions._
 
+/** thrift调用 使用的代理类  可以使用其测试dubbo接口 具体的使用方式及入口配置方式还在研究中 **/
 case class ThriftDifferenceProxy (
     settings: Settings,
     collector: InMemoryDifferenceCollector,
